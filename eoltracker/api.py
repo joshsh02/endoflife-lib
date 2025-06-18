@@ -10,10 +10,16 @@ class EOLClient:
             async with self._session.get(uri) as release_resp:
                 if release_resp.status != 200:
                     raise EOLTrackerAPIError(
-                        f"Failed to fetch release data from {uri}")
+                        f"Failed to fetch release data from {uri}",
+                        status_code=release_resp.status,
+                        payload={"uri": uri}
+                    )
                 return (await release_resp.json()).get("result", {})
         except aiohttp.ClientError as e:
-            raise EOLTrackerAPIError(f"HTTP error while fetching release data: {e}")
+            raise EOLTrackerAPIError(
+                f"HTTP error while fetching release data: {e}",
+                payload={"uri": uri}
+            )
 
     async def fetch_product_data(self, uri: str) -> dict:
         base_uri = "/".join(uri.strip("/").split("/")[:-2])
@@ -21,10 +27,16 @@ class EOLClient:
             async with self._session.get(base_uri) as product_resp:
                 if product_resp.status != 200:
                     raise EOLTrackerAPIError(
-                        f"Failed to fetch product data from {base_uri}")
+                        f"Failed to fetch product data from {base_uri}",
+                        status_code=product_resp.status,
+                        payload={"uri": base_uri}
+                    )
                 return (await product_resp.json()).get("result", {})
         except aiohttp.ClientError as e:
-            raise EOLTrackerAPIError(f"HTTP error while fetching product data: {e}")
+            raise EOLTrackerAPIError(
+                f"HTTP error while fetching product data: {e}",
+                payload={"uri": base_uri}
+            )
 
     async def fetch_all(self, uri: str) -> dict:
         release_data = await self.fetch_release_data(uri)
