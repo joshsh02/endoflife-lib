@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "endoflife-lib"
-version = "0.1.0"
+version = "0.1.2"
 description = "A client for fetching end-of-life and product data from endoflife.date"
 readme = "README.md"
 authors = [
